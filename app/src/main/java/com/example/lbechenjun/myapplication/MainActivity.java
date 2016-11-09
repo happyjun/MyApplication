@@ -118,5 +118,6 @@ public class MainActivity extends AppCompatActivity {
     }
     private void my7() {
         Log.d("","");
+        Log.d("my7","");
     }
 }
