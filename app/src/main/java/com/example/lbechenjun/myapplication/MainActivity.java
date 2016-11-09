@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         Toast.makeText(this,"on Start()",Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,"on Start2()",Toast.LENGTH_SHORT).show();
     }
 
     @Override
