@@ -68,7 +68,11 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this,"on stop()",Toast.LENGTH_SHORT).show();
     }
 
- 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Toast.makeText(this,"on destroy()",Toast.LENGTH_SHORT).show();
+    }
 
     private void fadeInDisplay(ImageView imageView, Bitmap bitmap) {
         final TransitionDrawable td =
