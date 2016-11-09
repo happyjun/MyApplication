@@ -97,4 +97,10 @@ public class MainActivity extends AppCompatActivity {
     private void my() {
         Log.d("","");
     }
+    private void my1() {
+        Log.d("","");
+    }
+    private void my2() {
+        Log.d("","");
+    }
 }
