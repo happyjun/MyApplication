@@ -56,6 +56,13 @@ public class MainActivity extends AppCompatActivity {
         revellayout.setLayoutTransition(layoutTransition);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Toast.makeText(this,"on Start()",Toast.LENGTH_SHORT).show();
+    }
+
+ 
 
     private void fadeInDisplay(ImageView imageView, Bitmap bitmap) {
         final TransitionDrawable td =
