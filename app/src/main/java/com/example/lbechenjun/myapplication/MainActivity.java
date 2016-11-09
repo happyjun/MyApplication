@@ -119,4 +119,8 @@ public class MainActivity extends AppCompatActivity {
         Log.d("","");
         Toast.makeText(this,"",Toast.LENGTH_SHORT).show();
     }
+    private void my8() {
+        Log.d("","");
+    }
+  
 }
