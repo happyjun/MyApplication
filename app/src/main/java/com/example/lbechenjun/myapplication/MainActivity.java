@@ -93,4 +93,8 @@ public class MainActivity extends AppCompatActivity {
         imageView.setImageDrawable(td);
         td.startTransition(6000);
     }
+
+    private void my() {
+        Log.d("","");
+    }
 }
