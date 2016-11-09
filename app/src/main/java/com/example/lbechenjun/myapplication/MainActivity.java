@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this,"on destroy() maser 2",Toast.LENGTH_SHORT).show();
         Toast.makeText(this,"on destroy() myapplication2 2",Toast.LENGTH_SHORT).show();
         Toast.makeText(this,"on destroy() myapplication2 3",Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,"on destroy() myapplication2 4",Toast.LENGTH_SHORT).show();
     }
 
     private void fadeInDisplay(ImageView imageView, Bitmap bitmap) {
