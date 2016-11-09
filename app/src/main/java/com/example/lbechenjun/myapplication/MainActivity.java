@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         Toast.makeText(this,"on Start()",Toast.LENGTH_SHORT).show();
         Toast.makeText(this,"on Start2()",Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,"on master Start2()",Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -100,6 +101,12 @@ public class MainActivity extends AppCompatActivity {
         Log.d("","");
     }
     private void my2() {
+        Log.d("","");
+    }
+    private void my3() {
+        Log.d("","");
+    }
+    private void my4() {
         Log.d("","");
     }
 }
