@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         Toast.makeText(this,"on destroy()",Toast.LENGTH_SHORT).show();
         Toast.makeText(this,"on destroy() myapplication2 1",Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,"on destroy() myapplication2 2",Toast.LENGTH_SHORT).show();
     }
 
     private void fadeInDisplay(ImageView imageView, Bitmap bitmap) {
