@@ -151,4 +151,8 @@ public class MainActivity extends AppCompatActivity {
     private void my17() {
         Log.d("","");
     }
+
+    private void my18() {
+        Log.d("","");
+    }
 }
