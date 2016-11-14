@@ -64,6 +64,10 @@ public class MainActivity extends AppCompatActivity {
         Log.d("","");
     }
 
+    private void myNew3() {
+        Log.d("","");
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
