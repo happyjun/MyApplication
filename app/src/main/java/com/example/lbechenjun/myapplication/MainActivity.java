@@ -60,6 +60,10 @@ public class MainActivity extends AppCompatActivity {
         Log.d("","");
     }
 
+    private void myNew2() {
+        Log.d("","");
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
