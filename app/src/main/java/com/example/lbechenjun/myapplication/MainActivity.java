@@ -1,188 +1,184 @@
 package com.example.lbechenjun.myapplication;
 
-import android.animation.LayoutTransition;
-import android.animation.ObjectAnimator;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
+
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.List;
 
-    private FrameLayout revellayout;
-    private ImageView image2;
-    private FrameLayout container;
-    private Button  action;
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    private static final int CONTACTS_LOADER_ID = 1;
+    private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 100;
+    private RecyclerView mRecyclerView;
+    private  RecyclerView.LayoutManager mLayoutManager;
+    private RecyclerViewAdapter adapter;
+    private Cursor cursor;
+    private String[] PERMISSIONS = {
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_SMS,
+            Manifest.permission.CAMERA,
+            Manifest.permission.LOCATION_HARDWARE};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.d("cj","on create()");
-        revellayout = (FrameLayout) findViewById(R.id.revel_layout);
-        image2 = (ImageView) findViewById(R.id.image_2);
-        container = (FrameLayout) findViewById(R.id.fmt_container);
-        action = (Button) findViewById(R.id.action);
-        action.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.fmt_container, new Fragment1(), null).commitNowAllowingStateLoss();
-                revellayout.removeView(image2);
+        mRecyclerView = (RecyclerView) findViewById(R.id.rcy_content);
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        adapter = new  RecyclerViewAdapter(getApplicationContext());
+        mRecyclerView.setAdapter(adapter);
+        getSupportLoaderManager().initLoader(CONTACTS_LOADER_ID, null, this);
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        // This is called when a new Loader needs to be created.
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+
+                // Should we show an explanation?
+                if (shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)) {
+
+                    // Show an expanation to the user *asynchronously* -- don't block
+                    // this thread waiting for the user's response! After the user
+                    // sees the explanation, try again to request the permission.
+
+                } else {
+
+                    // No explanation needed, we can request the permission.
+
+                    requestPermissions(PERMISSIONS, MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+
+                    // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                    // app-defined int constant. The callback method gets the
+                    // result of the request.
+                }
+            }else {
+                return contactsLoader();
+
             }
-        });
-        LayoutTransition layoutTransition = revellayout.getLayoutTransition();
-        if (layoutTransition == null) {
-            layoutTransition = new LayoutTransition();
+
+        }else {
+            return contactsLoader();
+
         }
-        ObjectAnimator animOut = ObjectAnimator.ofFloat(null, View.ALPHA, 1f, 0f).setDuration(2000);
-        layoutTransition.setAnimator(LayoutTransition.DISAPPEARING, animOut);
-        ObjectAnimator animIn = ObjectAnimator.ofFloat(null, View.ALPHA, 0f, 1f).setDuration(2000);
-        layoutTransition.setAnimator(LayoutTransition.CHANGE_DISAPPEARING, animIn);
-        layoutTransition.setAnimateParentHierarchy(true);
-        Toast.makeText(this,"this is a toast",Toast.LENGTH_SHORT).show();
-        revellayout.setLayoutTransition(layoutTransition);
+        return null;
+
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        //The framework will take care of closing the
+        // old cursor once we return.
+
+
+        this.cursor = cursor;
+        List<String> contacts = contactsFromCursor(cursor);
+        adapter.setList(contacts);
+        Log.d("","");
+
+
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        Toast.makeText(this,"on Start()",Toast.LENGTH_SHORT).show();
-        Toast.makeText(this,"on Start2()",Toast.LENGTH_SHORT).show();
-        Toast.makeText(this,"on master Start2()",Toast.LENGTH_SHORT).show();
+    public void onLoaderReset(Loader<Cursor> loader) {
+        // This is called when the last Cursor provided to onLoadFinished()
+        // above is about to be closed.  We need to make sure we are no
+        // longer using it.
+    }
+
+    private Loader<Cursor> contactsLoader() {
+        Uri contactsUri = ContactsContract.Contacts.CONTENT_URI; // The content URI of the phone contacts
+
+        String[] projection = {                                  // The columns to return for each row
+                ContactsContract.Contacts.DISPLAY_NAME
+        } ;
+
+        String selection = null;                                 //Selection criteria
+        String[] selectionArgs = {};                             //Selection criteria
+        String sortOrder = null;                                 //The sort order for the returned rows
+
+        return new CursorLoader(
+                getApplicationContext(),
+                contactsUri,
+                projection,
+                selection,
+                selectionArgs,
+                sortOrder);
+    }
+
+    private List<String> contactsFromCursor(Cursor cursor) {
+        List<String> contacts = new ArrayList<String>();
+
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+
+            do {
+                String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                contacts.add(name);
+            } while (cursor.moveToNext());
+        }
+
+        return contacts;
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        Toast.makeText(this,"on stop()",Toast.LENGTH_SHORT).show();
-        Toast.makeText(this,"on stop() myapplication2 1",Toast.LENGTH_SHORT).show();
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_READ_CONTACTS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    Loader loader = getSupportLoaderManager().getLoader(CONTACTS_LOADER_ID);
+                    if (loader == null) {
+                        getSupportLoaderManager().initLoader(CONTACTS_LOADER_ID, null, this);
+                    } else {
+                        loader.onContentChanged();
+                    }
+
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Toast.makeText(this,"on destroy()",Toast.LENGTH_SHORT).show();
-        Toast.makeText(this,"on destroy() myapplication2 1",Toast.LENGTH_SHORT).show();
-        Toast.makeText(this,"on destroy() myapplication2 2",Toast.LENGTH_SHORT).show();
-        Toast.makeText(this,"on destroy() maser 1",Toast.LENGTH_SHORT).show();
-        Toast.makeText(this,"on destroy() maser 2",Toast.LENGTH_SHORT).show();
-        Toast.makeText(this,"on destroy() myapplication2 2",Toast.LENGTH_SHORT).show();
-        Toast.makeText(this,"on destroy() myapplication2 3",Toast.LENGTH_SHORT).show();
-        Toast.makeText(this,"on destroy() myapplication2 4",Toast.LENGTH_SHORT).show();
-    }
-
-    private void fadeInDisplay(ImageView imageView, Bitmap bitmap) {
-        final TransitionDrawable td =
-                new TransitionDrawable(new Drawable[]{
-                        new ColorDrawable(getResources().getColor(R.color.test_color)),
-                        new BitmapDrawable(imageView.getResources(), bitmap)
-                });
-        imageView.setImageDrawable(td);
-        td.startTransition(6000);
-    }
-
-    private void my() {
-        Log.d("","");
-    }
-    private void my1() {
-        Log.d("","");
-    }
-    private void my2() {
-        Log.d("","");
-    }
-    private void my3() {
-        Log.d("","");
-    }
-    private void my4() {
-        Log.d("","");
-    }
-
-    private void my5() {
-        Log.d("","");
-    }
-    private void my6() {
-        Log.d("","");
-    }
-    private void my7() {
-        Log.d("","");
-        Toast.makeText(this,"",Toast.LENGTH_SHORT).show();
-    }
-    private void my8() {
-        Log.d("","");
-    }
-    private void my9() {
-        Log.d("","");
-    }
-
-    private void my10() {
-        Log.d("","");
-    }
-    private void my11() {
-        Log.d("","");
-    }
-    private void my12() {
-        Log.d("","");
-    }
-    private void my13() {
-        Log.d("","");
-    }
-    private void my14() {
-        Log.d("","");
-    }
-    private void my15() {
-        Log.d("","");
-    }
-    private void my16() {
-        Log.d("","");
-    }
-    private void my17() {
-        Log.d("","");
-    }
-
-    private void my18() {
-        Log.d("","");
-    }
-    private void my19() {
-        Log.d("","");
-    }
-    private void my20() {
-        Log.d("","");
-    }
-    private void my21() {
-        Log.d("","");
-    }
-    private void my22() {
-        Log.d("","");
-    }
-    private void my23() {
-        Log.d("","");
-    }
-    private void my24() {
-        Log.d("","");
-    }
-    private void my25() {
-        Log.d("","");
-    }
-    private void my26() {
-        Log.d("","");
-    }
-    private void my27() {
-        Log.d("","");
-    }
-    private void my28() {
-        Log.d("","");
+        if (this.cursor != null) {
+            cursor.close();
+        }
     }
 }
