@@ -88,6 +88,10 @@ public class MainActivity extends AppCompatActivity {
         Log.d("","");
     }
 
+    private void myNew9() {
+        Log.d("","");
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
