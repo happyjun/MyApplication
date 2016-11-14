@@ -56,6 +56,22 @@ public class MainActivity extends AppCompatActivity {
         revellayout.setLayoutTransition(layoutTransition);
     }
 
+    private void myNew2() {
+        Log.d("","");
+    }
+
+    private void myNew3() {
+        Log.d("","");
+    }
+
+    private void myNew4() {
+        Log.d("","");
+    }
+
+    private void myNew5() {
+        Log.d("","");
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
