@@ -120,6 +120,10 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this,"on destroy() myapplication2 4",Toast.LENGTH_SHORT).show();
     }
 
+    private void toast1() {
+        
+    }
+
     private void fadeInDisplay(ImageView imageView, Bitmap bitmap) {
         final TransitionDrawable td =
                 new TransitionDrawable(new Drawable[]{
