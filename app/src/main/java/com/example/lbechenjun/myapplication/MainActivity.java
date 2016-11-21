@@ -121,7 +121,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void toast1() {
-        
+
+    }
+
+    private void toast2() {
+
     }
 
     private void fadeInDisplay(ImageView imageView, Bitmap bitmap) {
