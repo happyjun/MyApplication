@@ -132,6 +132,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void toast4() {
+
+    }
     private void fadeInDisplay(ImageView imageView, Bitmap bitmap) {
         final TransitionDrawable td =
                 new TransitionDrawable(new Drawable[]{
